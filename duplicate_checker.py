@@ -132,7 +132,13 @@ class ANSI: # VSCODE darkmode automatically bumps up darker values so there is a
 # UTIL FUNCTIONS
 
 def clear():
-    os.system("cls")
+    # for windows
+    if os.name == 'nt':
+        _ = os.system('cls')
+    # for mac and linux(here, os.name is 'posix')
+    else:
+        _ = os.system('clear')
+ 
 
 def error(text):
     clear()
@@ -171,9 +177,9 @@ def menu():
     for i in range(len(data)):
         dat = data[i]
         display.append(str(i+1) + ") " + dat[0] + " - " + dat[2] + "(" + str(dat[1]) + ")")
-    
     # DISPLAY
-    colors = ["92m", "93m", "91m", "30m"] # [green, yellow, red, black]
+    colors = ["92m", "93m", "91m", "30m"] # [green, yellow, red, black]  
+    s = ""
     for i in range(len(display)):
         level = 0
         for match0 in matches:
@@ -184,20 +190,22 @@ def menu():
                 level += 1
         if level > 3:
             level = 3
-        print("\033[" + colors[level] + display[i])
+        s +="\033[" + colors[level] + display[i] + "\n"
 
     # INFO
-    print("\n\033[96m---------Duplicate_chekcer_v1.py---------")
-    print("\n\033[92m■ = No duplicate matches") 
-    print("\033[93m■ = One duplicate matches") 
-    print("\033[91m■ = Two duplicate matches") 
-    print("\033[30m■ = Three duplicate matches\n")   
+    s += "\n\033[96m---------Duplicate_chekcer_v1.py---------"
+    s += "\n\033[92m■ = No duplicate matches\n"
+    s += "\033[93m■ = One duplicate matches\n"
+    s += "\033[91m■ = Two duplicate matches\n"
+    s += "\033[30m■ = Three duplicate matches\n"  
+    print("\n\n-------IGNORE ABOVE CLS SCROLL-------") 
+    print(s)
     print("Selected", end = " : ")
     print(chosen)
     # INPUT
     if len(chosen) == 4:
         print("Maxinum selected is (4)")
-    cmd = input("Command (x to reset)  : ")
+    cmd = input("Command (x to reset)  : " + ANSI.reset)
     if cmd.isnumeric() and len(chosen) < 4:
         cmd = int(cmd)
         if cmd > 0 and cmd <= len(names):
